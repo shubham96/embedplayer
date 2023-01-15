@@ -2,19 +2,23 @@ import 'package:aurealembed/Screens/EpisodeEmbed/episode_embed_desktop.dart';
 import 'package:aurealembed/Screens/EpisodeEmbed/episode_embed_mobile.dart';
 import 'package:aurealembed/Screens/EpisodeEmbed/episode_embed_tablet.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class EpisodeWidget extends StatelessWidget {
-  const EpisodeWidget({Key? key}) : super(key: key);
+  static const String id = "/episode";
+  int episodeId;
+
+  EpisodeWidget({Key? key, required this.episodeId}) : super(key: key);
 
 
 
 
-  Future getEpisodeData() async {
+  Future getEpisodeData(episodeId) async {
 
     //Change the episode Id from dynamic url navigation (Advance navigation module from filled stack)
-    String url = "https://api.aureal.one/public/episode?episode_id=2081482";
+    String url = "https://api.aureal.one/public/episode?episode_id=$episodeId";
 
     Dio dio = Dio();  //http object to enable requests
     CancelToken cancel = CancelToken(); //Token to cancel in case of navigation
@@ -25,11 +29,15 @@ class EpisodeWidget extends StatelessWidget {
         // print(response.data);
         return response.data;
       }else{
-        print(response.statusCode);
+        if (kDebugMode) {
+          print(response.statusCode);
+        }
       }
 
     }catch(e){
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
 
@@ -40,7 +48,7 @@ class EpisodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(future: getEpisodeData(),builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) { return ScreenTypeLayout(mobile: EpisodeEmbedMobile(episodeObject: snapshot.data,), tablet: EpisodeEmbedTablet(episodeObject: snapshot.data,), desktop:  EpisodeEmbedDesktop(episodeObject: snapshot.data,),); },
-    );
+    return Scaffold(body: FutureBuilder(future: getEpisodeData(episodeId),builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) { return ScreenTypeLayout(mobile: EpisodeEmbedMobile(episodeObject: snapshot.data,), tablet: EpisodeEmbedTablet(episodeObject: snapshot.data,), desktop:  EpisodeEmbedDesktop(episodeObject: snapshot.data,),); },
+    ),);
   }
 }
