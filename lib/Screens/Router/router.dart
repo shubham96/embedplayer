@@ -4,24 +4,36 @@ import 'package:aurealembed/Screens/PodcastEmbed/podcast_embed.dart';
 import 'package:aurealembed/Screens/Router/route_names.dart';
 import 'package:aurealembed/Services/podcast_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   // print("${settings.name?.split(" / ")[0]} ${settings.name?.split(" / ")[1]} ${settings.name?.split(" / ")[2]}");
- print(settings.name);
-  switch (settings.name?.split('?')[0]) {
+ // print(settings.name);
+  switch (settings.name?.split("/")[1]) {
     case homeRoute:
       return _getPageRoute(Homepage(), settings);
     case episode:
+      print(settings.name!.split("/").toList());
       try{
-        return _getPageRoute(EpisodeWidget(episodeId: int.parse(settings.name!.split('=')[1])), settings);
+        return _getPageRoute(EpisodeWidget(episodeId: int.parse(settings.name!.split("/")[2])), settings);
       }catch(e){
         return _getPageRoute(Homepage(), settings);
       }
     case podcast:
-      return _getPageRoute(PodcastWidget(podcast_id: int.parse(settings.name!.split("=")[1])), settings);
+      try{
+        return _getPageRoute(PodcastWidget(podcast_id: int.parse(settings.name!.split("/")[2])), settings);
+      }catch(e){
+        return _getPageRoute(Homepage(), settings);
+      }
+
     default:
-      return _getPageRoute(Homepage(), settings);
+      try{
+        return _getPageRoute(EpisodeWidget(episodeId: int.parse(settings.name!.split("/")[1])), settings);
+      }catch(e){
+        return _getPageRoute(Homepage(), settings);
+      }
+
   }
 }
 

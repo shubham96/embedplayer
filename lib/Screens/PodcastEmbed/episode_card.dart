@@ -48,13 +48,13 @@ class EpisodeCard extends StatelessWidget {
 
             title: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: Text("${(snapshot.data as List)[index]['name']}", style: TextStyle(color: value.isBlack == true ? Colors.black : Colors.white),),
+              child: Text("${(snapshot.data as List)[index]['name']}", style: TextStyle(color: value.isBlack == true ? Colors.black : Colors.white, fontWeight: FontWeight.bold),),
             ),
 
             subtitle: (snapshot.data as List)[index]['summary'] == null? const Text("") :htmlMatch.hasMatch(
                 "${(snapshot.data as List)[index]['summary']}") ? Linkable(text: parse((snapshot.data as List)[index]['summary'])
                             .body!
-                            .text,textColor: value.isBlack == true ? Colors.black : Colors.white,maxLines: 2,style: TextStyle(color: value.isBlack == true ? Colors.black : Colors.white),) : Text("${(snapshot.data as List)[index]['summary']}", maxLines: 2, overflow: TextOverflow.ellipsis,style: TextStyle(color: value.isBlack == true ? Colors.black : Colors.white)),
+                            .text,textColor: value.isBlack == true ? Colors.black : Colors.white,maxLines: 2,style: TextStyle(color: value.isBlack == true ? Colors.black : Colors.white, fontWeight: FontWeight.w200),) : Text("${(snapshot.data as List)[index]['summary']}", maxLines: 2, overflow: TextOverflow.ellipsis,style: TextStyle(color: value.isBlack == true ? Colors.black : Colors.white)),
             trailing: IconButton(icon: Icon(Icons.more_vert_rounded, color: value.isBlack == true ? Colors.black : Colors.white,), onPressed: () {
       showModalBottomSheet(backgroundColor: Colors.black.withOpacity(0.7),context: context, builder: (context){
       return ClipRRect(

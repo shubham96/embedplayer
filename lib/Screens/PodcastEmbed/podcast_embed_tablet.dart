@@ -1,15 +1,14 @@
+import 'dart:ui';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aurealembed/Screens/EpisodeEmbed/episode_embed_desktop.dart';
 import 'package:aurealembed/Screens/PodcastEmbed/episode_card.dart';
-import 'package:aurealembed/Services/palette_generator.dart';
 import 'package:aurealembed/Services/podcast_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:linkable/linkable.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
-import 'package:html/parser.dart';
+import 'package:responsive_builder/responsive_builder.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PodcastEmbedTablet extends StatelessWidget {
   PodcastEmbedTablet({Key? key}) : super(key: key);
@@ -60,16 +59,31 @@ class PodcastEmbedTablet extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text("${value.podcastObject["podcast"]["name"]}", style: TextStyle(fontSize: 40, color: value.isBlack == true ? Colors.black : Colors.white, fontWeight: FontWeight.bold),),
-                            Text("${value.podcastObject['podcast']['author']}", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20, color: value.isBlack == true ? Colors.black : Colors.white),),
+                            Text("${value.podcastObject["podcast"]["name"]}", style: TextStyle(fontSize: 40, color: value.isBlack == true ? Colors.black : Colors.white, fontWeight: FontWeight.w800),),
+                            Text("${value.podcastObject['podcast']['author']}", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20, color: value.isBlack == true ? Colors.black : Colors.white),),
                             const SizedBox(height: 20,),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(decoration: BoxDecoration( border: Border.all(color: Colors.white)),child: const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                                  child: Text("Follow", style: TextStyle(color: Colors.white, fontSize: 15),),
-                                )),
+                                GestureDetector(
+                                  onTap: ()async{
+                                    await launchUrlString("https://aureal.one/podcast/${value.podcastObject['id']}");
+                                  },
+                                  child: Container(decoration: BoxDecoration( border: Border.all(color: value.isBlack == true ? Colors.black : Colors.white)),child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                    child: Text("Follow", style: TextStyle(color: value.isBlack == true ? Colors.black : Colors.white, fontSize: 15),),
+                                  )),
+                                ),
+                                IconButton(onPressed: (){
+                                  showModalBottomSheet(backgroundColor: Colors.black.withOpacity(0.7),context: context, builder: (context){
+                                    return ClipRRect(
+                                      child: BackdropFilter(
+                                          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                                          child: ScreenTypeLayout(mobile: BottomSheetMobile(url: "https://aureal.one/podcast/${value.podcastObject['id']}",), tablet: BottomSheetTablet(url: "https://aureal.one/podcast/${value.podcastObject['id']}"), desktop: BottomSheetDesktop(url: "https://aureal.one/podcast/${value.podcastObject['id']}"),)
+                                      ),
+                                    );
+                                  },);
+                                }, icon: Icon(Icons.more_vert_rounded, color: value.isBlack == true ? Colors.black : Colors.white,))
                               ],
                             ),
                             // PlayBackOptions(),
@@ -109,7 +123,7 @@ class PodcastEmbedTablet extends StatelessWidget {
                   if(snapshot.hasData){
                     return PlayBackOptions(episodeList: snapshot.data,);
                   }else{
-                    return Container();
+                    return ListTile(title: Text(""),);
                   }
                 })
               ],

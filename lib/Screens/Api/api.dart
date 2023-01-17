@@ -30,7 +30,7 @@ Future getEpisodes(int podcastId) async {
 
 }
 
-  getPodcastData({required int podcast_id, required BuildContext context}) async {
+  Future getPodcastData({required int podcast_id, required BuildContext context}) async {
   String url = "https://api.aureal.one/public/podcast?podcast_id=$podcast_id";
 
   // Provider.of<CurrentlyPlaying>(context);
@@ -41,7 +41,9 @@ Future getEpisodes(int podcastId) async {
   try{
     Response response = await dio.get(url, cancelToken: cancel);
     if(response.statusCode == 200){
-      Provider.of<PodcastProvider>(context, listen: false).podcastObject = response.data;
+      await Provider.of<PodcastProvider>(context, listen: false).getPalette(response.data['podcast']['image']).then((value) {
+        Provider.of<PodcastProvider>(context, listen: false).podcastObject = response.data;
+      });
       return response.data;
     }else{
       if (kDebugMode) {

@@ -32,8 +32,8 @@ class PodcastProvider extends ChangeNotifier{
 
   get podcastObject => _podcastObject;
 
-  getPalette()async{
-     await updatePaletteGenerator(_podcastObject['podcast']['image']).then((value) {
+  Future<void> getPalette(String image)async{
+     await updatePaletteGenerator(image).then((value) {
        _paletteGenerator = value;
        _isBlack = calculateTextColor(value.dominantColor!.color) == Colors.black ? true : false;
      });
@@ -44,7 +44,7 @@ class PodcastProvider extends ChangeNotifier{
   set podcastObject(var newValue) {
     _podcastObject = newValue;
     _episodeList = getEpisodes(_podcastObject['podcast']['id']);
-    getPalette();
+    // getPalette();
     notifyListeners();
   }
 
